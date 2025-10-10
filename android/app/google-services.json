@@ -1,0 +1,142 @@
+{
+  "project_info": {
+    "project_number": "51837840069",
+    "project_id": "govt-jobfinder",
+    "storage_bucket": "govt-jobfinder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51837840069:android:ffc944f919b6f9a949deac",
+        "android_client_info": {
+          "package_name": "com.example.govt_jobseeker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "51837840069-d8i9i0mbp3lumdmv8j6aofo6aumhvi18.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.govt_jobseeker",
+            "certificate_hash": "08a4380353ecab6428daaf1b9b9fbbd552fa389f"
+          }
+        },
+        {
+          "client_id": "51837840069-f28rl8agiou0slf9t2p36fjgjmptsdtg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvfDPh4IP1vHXoXzZnXVDKGf3QbZmxqhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51837840069-7pspiithmu392d7bbe0a8bf9hva5fnm1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "51837840069-010e6bemq59lei0oue07vb5c1enoq5n3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tcsApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51837840069:android:ddad70d94a53765649deac",
+        "android_client_info": {
+          "package_name": "com.example.tcs_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "51837840069-cc14ipqh9mcrvlv74mdamkaqgkp42un2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tcs_app",
+            "certificate_hash": "d3194bf0a13860a78c973862c9b7de2c124be6fb"
+          }
+        },
+        {
+          "client_id": "51837840069-f28rl8agiou0slf9t2p36fjgjmptsdtg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvfDPh4IP1vHXoXzZnXVDKGf3QbZmxqhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51837840069-7pspiithmu392d7bbe0a8bf9hva5fnm1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "51837840069-010e6bemq59lei0oue07vb5c1enoq5n3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tcsApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51837840069:android:1d288df57505363749deac",
+        "android_client_info": {
+          "package_name": "com.itpl.app.tcs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "51837840069-oknr3m6g92gfu84c148o1sqh9n6pd7rh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itpl.app.tcs",
+            "certificate_hash": "d3194bf0a13860a78c973862c9b7de2c124be6fb"
+          }
+        },
+        {
+          "client_id": "51837840069-f28rl8agiou0slf9t2p36fjgjmptsdtg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvfDPh4IP1vHXoXzZnXVDKGf3QbZmxqhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51837840069-7pspiithmu392d7bbe0a8bf9hva5fnm1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "51837840069-010e6bemq59lei0oue07vb5c1enoq5n3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tcsApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
