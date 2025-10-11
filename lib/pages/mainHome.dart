@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'homeScreen.dart';
 import 'search_job_category.dart';
 import 'search_page.dart';
+import 'package:url_launcher/url_launcher.dart'; 
 
 class MainHome extends StatefulWidget {
   const MainHome({Key? key}) : super(key: key);
@@ -114,16 +115,40 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
   }
     // Static list of job notifications
   final List<String> jobNotifications = [
-    '1. New opening for Software Engineer at TCS, apply by Oct 20, 2025',
-    '2. Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
-    '3. Bank PO vacancies announced, check eligibility now',
-    '4. Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
-    '5. Self-Employment Loan Scheme launched, apply today',
+    'New opening for Software Engineer at TCS, apply by Oct 20, 2025',
+    'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
+    'Bank PO vacancies announced, check eligibility now',
+    'Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
+    'Self-Employment Loan Scheme launched, apply today',
+        'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
+    'Bank PO vacancies announced, check eligibility now',
+    'Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
+        'New opening for Software Engineer at TCS, apply by Oct 20, 2025',
+    'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
   ];
+    final List<String> joblinks = [
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+        'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+    'https://tpsc.tripura.gov.in/notice-board',
+  ];
+
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   Widget buildJobNotifications() {
     return Container(
-      height: 150,
+      // Removed fixed height to allow for endless scrolling
       margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -138,23 +163,29 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
           ),
         ],
       ),
-      child: Marquee(
-        text: jobNotifications.join('\n\n'),
-        style: const TextStyle(
-          color: Colors.redAccent,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        scrollAxis: Axis.vertical,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        blankSpace: 20.0,
-        velocity: 20.0,
-        pauseAfterRound: const Duration(seconds: 2),
-        startPadding: 10.0,
-        accelerationDuration: const Duration(seconds: 1),
-        accelerationCurve: Curves.linear,
-        decelerationDuration: const Duration(milliseconds: 500),
-        decelerationCurve: Curves.easeOut,
+      child: ListView.builder(
+        // physics: const NeverScrollableScrollPhysics(), // Disable internal scrolling
+        shrinkWrap: true, // Allow ListView to take only needed space
+        itemCount: jobNotifications.length,
+        itemBuilder: (context, index) {
+          final String notificationText = jobNotifications[index];
+          final String link = joblinks[index];
+          return GestureDetector(
+            onTap: () => _launchUrl(link),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                notificationText,
+                style: const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
