@@ -54,7 +54,7 @@ class ProfileDrawer extends ConsumerWidget {
 
   final UserModel? user = ref.watch(userProvider.state).state;
     // final isGuest = !user.isAuthenticated;
-  List<String> emailList = ['praneshpal009@gmail.com', 'priyacsenita@gmail.com', 'debbarmakhalen175@gmail.com', 'employment.gov.tr@gmail.com', 'sowrajit1998@gmail.com'];
+  List<String> emailList = ['praneshpal009@gmail.com','sowrajit2000@gmail.com','sowrajit0610@gmail.com','sowrajit.business@gmail.com', 'priyacsenita@gmail.com', 'debbarmakhalen175@gmail.com', 'employment.gov.tr@gmail.com', 'sowrajit1998@gmail.com'];
 
       // If user is null, you might want to show a different UI or perform some other action
   if (user == null) {

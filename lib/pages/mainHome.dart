@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:marquee/marquee.dart';
 import 'package:flutter/material.dart';
 // import 'package:tcs_app/pages/search/feed_screen.dart';
 import 'package:tcs_app_fixed/pages/profile_drawer.dart';
@@ -110,6 +110,52 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
                 item,
               ))
           .toList(),
+    );
+  }
+    // Static list of job notifications
+  final List<String> jobNotifications = [
+    '1. New opening for Software Engineer at TCS, apply by Oct 20, 2025',
+    '2. Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
+    '3. Bank PO vacancies announced, check eligibility now',
+    '4. Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
+    '5. Self-Employment Loan Scheme launched, apply today',
+  ];
+
+  Widget buildJobNotifications() {
+    return Container(
+      height: 150,
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Marquee(
+        text: jobNotifications.join('\n\n'),
+        style: const TextStyle(
+          color: Colors.redAccent,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        scrollAxis: Axis.vertical,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        blankSpace: 20.0,
+        velocity: 20.0,
+        pauseAfterRound: const Duration(seconds: 2),
+        startPadding: 10.0,
+        accelerationDuration: const Duration(seconds: 1),
+        accelerationCurve: Curves.linear,
+        decelerationDuration: const Duration(milliseconds: 500),
+        decelerationCurve: Curves.easeOut,
+      ),
     );
   }
 
@@ -244,6 +290,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
               ),
             ),
           ),
+           buildJobNotifications(),
           Container(
             padding: const EdgeInsets.all(16.0),
             child: GridView.count(
