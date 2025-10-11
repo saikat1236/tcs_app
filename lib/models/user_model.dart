@@ -8,11 +8,9 @@ class UserModel {
   DateTime? pickedDate;
 
   String? username;
-  String email =
-      ''; // Default empty string or ensure it's always assigned before use
+  String email =''; // Default empty string or ensure it's always assigned before use
   String? phoneNo;
-  String password =
-      ''; // Initialized with default value, so `late` is not needed
+  // String password =''; // Initialized with default value, so `late` is not needed
 
   String? dob;
   late String uid; // Ensure this is assigned before accessed
@@ -41,7 +39,7 @@ class UserModel {
     required this.username,
     required this.email,
     required this.phoneNo,
-    required this.password,
+    // required this.password,
     required this.dob,
     required this.uid,
     required this.isAuthenticated,
@@ -67,7 +65,7 @@ class UserModel {
     String? username,
     String? email,
     String? phoneNo,
-    String? password,
+    // String? password,
     String? dob,
     String? uid,
     bool? isAuthenticated,
@@ -92,7 +90,7 @@ class UserModel {
       username: username ?? this.username,
       email: email ?? this.email,
       phoneNo: phoneNo ?? this.phoneNo,
-      password: password ?? this.password,
+      // password: password ?? this.password,
       dob: dob ?? this.dob,
       uid: uid ?? this.uid,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -120,7 +118,7 @@ class UserModel {
       'username': username,
       'email': email,
       'phoneNo': phoneNo,
-      'password': password,
+      // 'password': password,
       'dob': dob,
       'uid': uid,
       'isAuthenticated': isAuthenticated,
@@ -148,7 +146,7 @@ class UserModel {
         username: map['username'] as String,
         email: map['email'] as String,
         phoneNo: map['phoneNo'] as String,
-        password: map['password'] as String,
+        // password: map['password'] as String,
         dob: map['dob'] as String,
         uid: map['uid'] as String,
         isAuthenticated: map['isAuthenticated'] as bool,
@@ -174,7 +172,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(username: $username, email: $email, phoneNo: $phoneNo, password: $password, dob: $dob, uid: $uid, isAuthenticated: $isAuthenticated, gender: $gender, religion: $religion, category: $category, state: $state, district: $district, subDivision: $subDivision, areaRoU: $areaRoU, pincode: $pincode, gaurdian: $gaurdian, education: $education, educationDetail: $educationDetail, istraining: $istraining, training: $training, employmentStatus: $employmentStatus, occupation: $occupation, skills: $skills)';
+    return 'UserModel(username: $username, email: $email, phoneNo: $phoneNo, dob: $dob, uid: $uid, isAuthenticated: $isAuthenticated, gender: $gender, religion: $religion, category: $category, state: $state, district: $district, subDivision: $subDivision, areaRoU: $areaRoU, pincode: $pincode, gaurdian: $gaurdian, education: $education, educationDetail: $educationDetail, istraining: $istraining, training: $training, employmentStatus: $employmentStatus, occupation: $occupation, skills: $skills)';
   }
 
   @override
@@ -184,7 +182,7 @@ class UserModel {
     return other.username == username &&
         other.email == email &&
         other.phoneNo == phoneNo &&
-        other.password == password &&
+        // other.password == password &&
         other.dob == dob &&
         other.uid == uid &&
         other.isAuthenticated == isAuthenticated &&
@@ -211,7 +209,7 @@ class UserModel {
     return username.hashCode ^
         email.hashCode ^
         phoneNo.hashCode ^
-        password.hashCode ^
+        // password.hashCode ^
         dob.hashCode ^
         uid.hashCode ^
         isAuthenticated.hashCode ^

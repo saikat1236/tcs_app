@@ -185,7 +185,7 @@ class _MainHomeScreenState extends State<MainHomeScreen>
                   title: Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'All Updateds',
+                      'All Updates',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

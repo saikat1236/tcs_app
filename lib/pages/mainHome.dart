@@ -118,7 +118,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         label: const Text(
-          'All Updateds',
+          'All Updates',
           style: TextStyle(fontSize: 18),
         ),
         icon: Icon(
@@ -143,7 +143,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
           ),
         ),
         title: const Text(
-          'Tripura Career Service',
+          'Tripura Career Services',
         ),
         actions: [
           Builder(builder: (context) {
@@ -165,7 +165,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
           ),
           Container(
             
-            height: 180,
+            height: 300,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
               clipBehavior: Clip.hardEdge,
@@ -174,7 +174,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
                   color: Colors.blue.shade100,
                   width: double.maxFinite,
                   padding: EdgeInsets.all(16),
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -195,7 +195,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
                                 color: Colors.blue.shade600),
                           ),
                           Text(
-                            'Tripura Career Service',
+                            'Tripura Career Services',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 24),
                           ),
@@ -213,13 +213,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
                                 fontSize: 16,
                                 color: Colors.grey.shade600),
                           ),
-                          Text(
-                            'Government of Tripura',
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14,
-                                color: Colors.grey.shade600),
-                          ),
+                   
                         ],
                       ),
                       Spacer(),

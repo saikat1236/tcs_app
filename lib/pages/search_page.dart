@@ -90,7 +90,7 @@ class SearchPage extends ConsumerWidget {
               // ),
               // ),
               const Text(
-                'Tripura Career Service',
+                'Tripura Career Services',
                 style: TextStyle(
                   fontSize: 17,
                   color: Colors.white,

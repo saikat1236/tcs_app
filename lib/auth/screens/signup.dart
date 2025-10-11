@@ -1,5 +1,3 @@
-// import 'dart:ffi';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,16 +9,14 @@ import '../../main.dart';
 import '../../models/user_model.dart';
 import '../controlller/auth_controller.dart';
 import 'authservice.dart';
-import 'login_page.dart';
-// import '../../utils.dart';
-// import 'error_handler.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   static const String routeName = '/signup';
-  const SignupPage({super.key});
+  final UserCredential userCredential;
+
+  const SignupPage({super.key, required this.userCredential});
 
   @override
-  // ignore: library_private_types_in_public_api
   ConsumerState<ConsumerStatefulWidget> createState() => _SignupPageState();
 }
 
@@ -30,14 +26,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   DateTime? pickedDate;
 
   String? username;
-  String email =
-      ''; // Default empty string or ensure it's always assigned before use
+  String email = '';
   String? phoneNo;
-  String password =
-      ''; // Initialized with default value, so `late` is not needed
 
   String? dob;
-  late String uid; // Ensure this is assigned before accessed
+  late String uid;
   bool? isAuthenticated;
   String? gender;
   String? religion;
@@ -59,8 +52,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   String? occupation;
   List<String>? skills;
 
-  //To check fields during submit
-  checkFields() {
+  bool checkFields() {
     final form = formKey.currentState;
     if (form!.validate()) {
       form.save();
@@ -69,24 +61,19 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     return false;
   }
 
-  //To Validate email
   String? validateEmail(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = RegExp(pattern.toString());
-
     if (!regex.hasMatch(value)) {
       return 'Enter Valid Email';
-    } else {
-      return null;
     }
+    return null;
   }
 
-  // List of items in our dropdown menu
   var genderItems = [
     'Male',
     'Female',
-    // 'Transgender'
     'Others',
   ];
   var religionItems = [
@@ -116,7 +103,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     'Post Graduation',
     'Phd. or Specialist'
   ];
-
   var stateItems = [
     'Andhra Pradesh',
     'Arunachal Pradesh',
@@ -147,15 +133,20 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     'Uttarakhand',
     'West Bengal'
   ];
-
   var trainingItems = ['ITI', "PSU", 'PMKVY', 'DDUGKY', 'Others'];
-
   var employmentStatusItem = ['employed', 'unemployment'];
 
   @override
   void initState() {
-    dateinput = ""; //set the initial value of text field
+    dateinput = "";
     super.initState();
+    // Pre-fill email, username, and uid from Google Sign-In
+    final user = widget.userCredential.user;
+    if (user != null) {
+      email = user.email ?? '';
+      username = user.displayName;
+      uid = user.uid;
+    }
   }
 
   int calculateAge(DateTime? birthDate) {
@@ -189,15 +180,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                SizedBox(
-                  height: 55,
-                ),
+                SizedBox(height: 55),
                 Image.asset(
                   "assets/images/logo.png",
                   width: 120,
                 ),
                 Text(
-                  "Tripura Career Service",
+                  "Tripura Career Services",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.grey.shade800,
@@ -205,12 +194,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                       height: 1),
                 ),
                 SizedBox(height: 24.0),
-                // Divider(),
-                // Spacer(),
                 Row(
                   children: [
                     Text(
-                      'Sign-up',
+                      'Complete Your Profile',
                       style: TextStyle(
                           fontSize: 30.0, fontWeight: FontWeight.w700),
                     ),
@@ -219,42 +206,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 SizedBox(height: 12.0),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
+                  initialValue: email,
+                  enabled: false, // Disable email field as it's from Google Sign-In
                   decoration: inputDecuration(
                       title: 'Email', icon: Icons.email_outlined),
-                  onChanged: (value) {
-                    email = value;
-                  },
                   validator: (value) => value!.isEmpty
                       ? 'Email is required'
                       : validateEmail(value),
                 ),
                 SizedBox(height: 12.0),
-                TextFormField(
-                    // keyboardType: TextInputType.visiblePassword,
-                    decoration:
-                        inputDecuration(title: 'Password', icon: Icons.lock),
-                    obscureText: true,
-                    onChanged: (value) {
-                      password = value;
-                    },
-                    validator: (value) =>
-                        value!.isEmpty ? 'Password is required' : null),
-
-                SizedBox(height: 12.0),
-                TextFormField(
-                    // keyboardType: TextInputType.visiblePassword,
-                    autovalidateMode: AutovalidateMode.always,
-                    decoration: inputDecuration(
-                        title: 'Confirm Password', icon: Icons.lock_open),
-                    obscureText: true,
-                    // onChanged: (value) {
-                    //   password = value;
-                    // },
-                    validator: (value) => value! != password
-                        ? 'Confirm Password does not match'
-                        : null),
-                SizedBox(height: 12.0),
-
                 TextFormField(
                     keyboardType: TextInputType.phone,
                     decoration: inputDecuration(
@@ -265,10 +225,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     validator: (value) =>
                         value!.isEmpty ? 'Phone Number is required' : null),
                 SizedBox(height: 12.0),
-
-                ///
                 TextFormField(
                     keyboardType: TextInputType.text,
+                    initialValue: username,
                     decoration:
                         inputDecuration(title: 'Full Name', icon: Icons.person),
                     onChanged: (value) {
@@ -277,47 +236,28 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     validator: (value) =>
                         value!.isEmpty ? 'Your Name is required' : null),
                 SizedBox(height: 12.0),
-
-////
-
                 GestureDetector(
                   onTap: () async {
                     pickedDate = await showDatePicker(
                         context: context,
                         initialDatePickerMode: DatePickerMode.year,
-                        keyboardType: TextInputType.datetime,
-                        // builder: (BuildContext? context, Widget? child) {
-                        //   return Theme(
-                        //     data: ThemeData.light().copyWith(
-                        //       primaryColor: Colors.blue,
-                        //       colorScheme:
-                        //           ColorScheme.light(primary: Colors.blue),
-                        //       buttonTheme: ButtonThemeData(
-                        //           textTheme: ButtonTextTheme.primary),
-                        //     ),
-                        //     child: Container(),
-                        //   );
-                        // },
-                        helpText: '', // This hides the "Edit" icon
-
                         initialDate: DateTime.now(),
-                        firstDate: DateTime(
-                            1950), //DateTime.now() - not to allow to choose before today.
+                        firstDate: DateTime(1950),
                         lastDate: DateTime(2040));
-
-                    if (pickedDate != null || calculateAge(pickedDate) >= 16) {
+                    if (pickedDate != null && calculateAge(pickedDate) >= 16) {
                       String formattedDate =
                           DateFormat('dd-MM-yyyy').format(pickedDate!);
                       setState(() => dateinput = formattedDate);
                     } else {
-                      print("Please enter a valid date.");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please enter a valid date of birth (age must be 16 or older).")),
+                      );
                     }
                   },
                   child: Container(
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            8), // Adjust the radius as needed
+                        borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: Colors.grey.shade800,
                           width: 1,
@@ -326,9 +266,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                       child: Row(
                         children: [
                           Icon(Icons.calendar_month),
-                          SizedBox(
-                            width: 8,
-                          ),
+                          SizedBox(width: 8),
                           Text(dateinput == "" ? 'Date of Birth' : dateinput),
                         ],
                       )),
@@ -338,7 +276,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   borderRadius: BorderRadius.circular(15),
                   style: TextStyle(color: Colors.black),
                   dropdownColor: Color.fromARGB(255, 255, 255, 255),
-                  // value: genderValue,
                   items: genderItems.map((String items) {
                     return DropdownMenuItem(
                       value: items,
@@ -351,7 +288,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     });
                   },
                   validator: (value) =>
-                      value!.isEmpty ? 'Your gender is required' : null,
+                      value == null ? 'Your gender is required' : null,
                   decoration: InputDecoration(
                     labelText: 'Gender',
                     border: dropDownOutlineBorder(),
@@ -359,7 +296,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   ),
                 ),
                 SizedBox(height: 12.0),
-
                 _buildSignupForm(),
               ],
             ),
@@ -386,7 +322,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             color: Colors.grey.shade800, width: 2, style: BorderStyle.solid));
   }
 
-  _buildSignupForm() {
+  Widget _buildSignupForm() {
     return Column(children: [
       DropdownButtonFormField(
         items: categoryItems.map((String items) {
@@ -401,15 +337,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           });
         },
         validator: (value) =>
-            value!.isEmpty ? 'Your category is required' : null,
+            value == null ? 'Your category is required' : null,
         decoration: InputDecoration(
             labelText: 'Category',
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       DropdownButtonFormField(
         items: religionItems.map((String items) {
           return DropdownMenuItem(
@@ -423,15 +357,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           });
         },
         validator: (value) =>
-            value!.isEmpty ? 'Your religion is required' : null,
+            value == null ? 'Your religion is required' : null,
         decoration: InputDecoration(
             labelText: 'Religion',
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       DropdownButtonFormField(
         items: stateItems.map((String items) {
           return DropdownMenuItem(
@@ -444,15 +376,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             state = newValue!;
           });
         },
-        validator: (value) => value!.isEmpty ? 'Your State is required' : null,
+        validator: (value) => value == null ? 'Your State is required' : null,
         decoration: InputDecoration(
             labelText: 'Select your State',
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
           keyboardType: TextInputType.text,
           decoration: inputDecuration(
@@ -461,9 +391,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             district = value;
           },
           validator: (value) => value!.isEmpty ? 'District is required' : null),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
           keyboardType: TextInputType.text,
           decoration: inputDecuration(
@@ -472,10 +400,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             subDivision = value;
           },
           validator: (value) =>
-              value!.isEmpty ? 'Your sub divsion is required' : null),
-      const SizedBox(
-        height: 10,
-      ),
+              value!.isEmpty ? 'Your sub division is required' : null),
+      SizedBox(height: 10),
       DropdownButtonFormField(
         items: areaRoUItems.map((String items) {
           return DropdownMenuItem(
@@ -488,7 +414,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             areaRoU = newValue!;
           });
         },
-        validator: (value) => value!.isEmpty ? 'State your area type' : null,
+        validator: (value) => value == null ? 'State your area type' : null,
         decoration: InputDecoration(
             labelText: 'Area type',
             labelStyle: TextStyle(
@@ -496,9 +422,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
           style: TextStyle(color: Colors.black),
           keyboardType: TextInputType.number,
@@ -506,31 +430,25 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           decoration:
               inputDecuration(title: 'Pincode', icon: Icons.location_city),
           onChanged: (value) {
-            pincode = int.parse(value);
+            pincode = int.tryParse(value);
           },
           validator: (value) =>
               value!.isEmpty ? 'Your area pincode is required' : null),
-      const SizedBox(
-        height: 10,
-      ),
-      // const SizedBox(height: 50.0),
+      SizedBox(height: 10),
       TextFormField(
           keyboardType: TextInputType.text,
           decoration: inputDecuration(
-              title: 'Gaurdian/Father name', icon: Icons.person_2),
+              title: 'Guardian/Father name', icon: Icons.person_2),
           onChanged: (value) {
             gaurdian = value;
           },
           validator: (value) =>
-              value!.isEmpty ? 'Your gaurdian name is required' : null),
-      const SizedBox(
-        height: 10,
-      ),
+              value!.isEmpty ? 'Your guardian name is required' : null),
+      SizedBox(height: 10),
       DropdownButtonFormField(
         borderRadius: BorderRadius.circular(15),
         style: TextStyle(color: Colors.black),
         dropdownColor: Color.fromARGB(255, 255, 255, 255),
-        // value: genderValue,
         items: educationItems.map((String items) {
           return DropdownMenuItem(
             value: items,
@@ -543,15 +461,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           });
         },
         validator: (value) =>
-            value!.isEmpty ? 'Your education is required' : null,
+            value == null ? 'Your education is required' : null,
         decoration: InputDecoration(
             labelText: 'Select your Education qualification',
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
           decoration: inputDecuration(title: 'Education', icon: Icons.school),
           onChanged: (value) {
@@ -559,9 +475,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           },
           validator: (value) =>
               value!.isEmpty ? 'Your education detail is required' : null),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       DropdownButtonFormField(
         items: employmentStatusItem.map((String items) {
           return DropdownMenuItem(
@@ -575,25 +489,21 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           });
         },
         validator: (value) =>
-            value!.isEmpty ? 'Your employment status is required' : null,
+            value == null ? 'Your employment status is required' : null,
         decoration: InputDecoration(
             labelText: 'Employment Status',
             border: dropDownOutlineBorder(),
             focusedBorder: focusBorderDropDown()),
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
         decoration:
             inputDecuration(title: 'Add your Skills', icon: Icons.settings),
         onChanged: (value) {
-          skills = value.split('');
+          skills = value.split(',');
         },
       ),
-      const SizedBox(
-        height: 10,
-      ),
+      SizedBox(height: 10),
       TextFormField(
         decoration: inputDecuration(
             title: 'Add your Occupation', icon: Icons.cases_outlined),
@@ -601,9 +511,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           occupation = value;
         },
       ),
-      const SizedBox(
-        height: 12,
-      ),
+      SizedBox(height: 12),
       RadioMenuButton(
           trailingIcon: Icon(Icons.settings_ethernet_sharp),
           style: ButtonStyle(
@@ -611,112 +519,83 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
             elevation: WidgetStatePropertyAll<double>(1),
             iconColor: WidgetStatePropertyAll<Color>(Colors.green),
-            // foregroundColor: MaterialStatePropertyAll<Color>
           ),
           toggleable: true,
           value: 'Yes',
           groupValue: istraining,
           onChanged: (value) {
             setState(() {
-              if (value != null)
-                istraining = value;
-              else {
-                istraining = 'no';
-              }
-              //  == 'Yes' ? true : false;
+              istraining = value ?? 'No';
             });
           },
-          // onChanged: ((value) =>
-          // istraining = value == 'Yes' ? true : false),
-          child: Text(
-            'Have you done any skill training, Yes?',
-          )),
-      const SizedBox(
-        height: 5,
-      ),
-      istraining == 'Yes'
-          ? DropdownButtonFormField(
-              items: trainingItems.map((String items) {
-                return DropdownMenuItem(
-                  value: items,
-                  child: Text(items),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  training = newValue;
-                });
-              },
-              decoration: InputDecoration(
-                  labelText: 'Which Training Institute',
-                  border: dropDownOutlineBorder(),
-                  focusedBorder: focusBorderDropDown()),
-            )
-          : const SizedBox(
-              height: 1,
-            ),
-      SizedBox(
-        height: 40,
-      ),
+          child: Text('Have you done any skill training, Yes?')),
+      SizedBox(height: 5),
+      if (istraining == 'Yes')
+        DropdownButtonFormField(
+          items: trainingItems.map((String items) {
+            return DropdownMenuItem(
+              value: items,
+              child: Text(items),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              training = newValue;
+            });
+          },
+          decoration: InputDecoration(
+              labelText: 'Which Training Institute',
+              border: dropDownOutlineBorder(),
+              focusedBorder: focusBorderDropDown()),
+        ),
+      SizedBox(height: 40),
       GestureDetector(
         onTap: () async {
           if (!isLoading && checkFields()) {
             setState(() => isLoading = true);
-            var id = const Uuid();
-            uid = id.v4();
-            skills = [];
-
-            // Other field initializations...
-            isAuthenticated = false;
-            dob = dateinput;
-
             try {
-              UserCredential userCreds =
-                  await AuthService().signUp(email, password, context);
-              uid = userCreds.user!.uid;
+              skills = skills ?? [];
+              isAuthenticated = true;
+              dob = dateinput;
 
               UserModel userData = UserModel(
-                category: category,
-                educationDetail: educationDetail,
-                username: username,
-                email: email, // Ensure this is assigned since it's non-nullable
-                phoneNo: phoneNo,
-                password: password,
-                dob: dob,
-                uid: uid, // Ensure this is assigned before accessed
-                isAuthenticated: isAuthenticated,
-                gender: gender,
-                religion: religion,
-                state: state,
-                district: district,
-                subDivision: subDivision,
-                areaRoU: areaRoU,
-                pincode: pincode,
-                gaurdian: gaurdian,
-                education: education,
+                category: category ?? '',
+                educationDetail: educationDetail ?? '',
+                username: username ?? '',
+                email: email,
+                phoneNo: phoneNo ?? '',
+                dob: dob ?? '',
+                uid: widget.userCredential.user!.uid,
+                isAuthenticated: isAuthenticated ?? false,
+                gender: gender ?? '',
+                religion: religion ?? '',
+                state: state ?? '',
+                district: district ?? '',
+                subDivision: subDivision ?? '',
+                areaRoU: areaRoU ?? '',
+                pincode: pincode ?? 0,
+                gaurdian: gaurdian ?? '',
+                education: education ?? '',
                 istraining: istraining == 'Yes',
-                training: training,
-                employmentStatus: employmentStatus,
-                occupation: occupation,
-                skills: skills ?? [], // Default to empty list if null
+                training: training ?? '',
+                employmentStatus: employmentStatus ?? false,
+                occupation: occupation ?? '',
+                skills: skills ?? [],
               );
 
-              // Use userCreds to create new user
               await ref
                   .read(authControllerProvider.notifier)
-                  .signUpWithEmail(context, userCreds, userData);
+                  .signUpWithGoogle(context, widget.userCredential, userData);
 
               final prefs = await SharedPreferences.getInstance();
               prefs.setBool('showHome', true);
 
-              // if (ref.read(authStateChangeProvider).hasValue) {
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => const HomePage()));
-              // }
             } catch (e) {
-              setState(() => isLoading = false);
-
-              // showSnackBar(context, e.toString());
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Profile completion failed: $e")),
+              );
             } finally {
               setState(() => isLoading = false);
             }
@@ -726,59 +605,72 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             height: 50.0,
             child: Material(
                 borderRadius: BorderRadius.circular(25.0),
-                // shadowColor: Colors.greenAccent,
                 color: Color.fromARGB(255, 36, 84, 241),
                 elevation: 3.0,
                 child: Center(
                     child: isLoading
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Create Account',
+                        : Text('Complete Profile',
                             style: TextStyle(
                                 color: Colors.white, fontFamily: 'Trueno'))))),
       ),
-      const SizedBox(height: 20.0),
+      SizedBox(height: 20.0),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             'By continuing you agree with our ',
             style: TextStyle(color: Colors.black54),
           ),
-          // const SizedBox(width: 5.0),
           InkWell(
               onTap: () {
                 launchURL();
               },
-              child: const Text('Privacy Policy',
+              child: Text('Privacy Policy',
                   style: TextStyle(
                       color: Color.fromARGB(255, 36, 84, 241),
                       decoration: TextDecoration.underline))),
         ],
       ),
-      const SizedBox(
-        height: 18,
-      ),
+      SizedBox(height: 18),
       InkWell(
           onTap: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Go back',
+          child: Text('Go back',
               style: TextStyle(
                 color: Color.fromARGB(255, 36, 84, 241),
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ))),
-      const SizedBox(height: 40.0),
-      // AppDeveloperFooter(),
+      SizedBox(height: 40.0),
     ]);
+  }
+
+  void launchURL() async {
+    const url = 'https://textmi.in/privacy-policy/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
-void launchURL() async {
-  const url = 'https://textmi.in/privacy-policy/';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
+InputDecoration inputDecuration({
+  required String title,
+  required IconData icon,
+}) {
+  return InputDecoration(
+    labelText: title,
+    prefixIcon: Icon(icon, color: Colors.grey.shade800),
+    labelStyle: TextStyle(color: Colors.grey.shade800),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      borderSide: BorderSide(color: Colors.blue, width: 2),
+    ),
+  );
 }
