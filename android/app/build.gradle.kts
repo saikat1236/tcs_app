@@ -38,7 +38,9 @@ android {
         }
     }
 }
-
+dependencies {
+    implementation "androidx.activity:activity:1.8.0" // For back button handling
+}
 flutter {
     source = "../.."
 }

@@ -7,6 +7,7 @@ import 'homeScreen.dart';
 import 'search_job_category.dart';
 import 'search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:marquee/marquee.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({Key? key}) : super(key: key);
@@ -17,91 +18,163 @@ class MainHome extends StatefulWidget {
 
 class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
   late TextEditingController nameController;
-
-  // ---------- Scroll / Infinite loading ----------
-  late final ScrollController _notificationController;
-  bool _isLoadingMore = false;
-
-  // Initial static data (you can replace with an API call later)
-  final List<String> _initialNotifications = [
-    'New opening for Software Engineer at TCS, apply by Oct 20, 2025',
-    'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
-    'Bank PO vacancies announced, check eligibility now',
-    'Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
-    'Self-Employment Loan Scheme launched, apply today',
-    'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
-    'Bank PO vacancies announced, check eligibility now',
-    'Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
-    'New opening for Software Engineer at TCS, apply by Oct 20, 2025',
-    'Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
-  ];
-
-  final List<String> _initialLinks = List.filled(
-      10, 'https://tpsc.tripura.gov.in/notice-board'); // 10 items
-
-  // Dynamic lists that grow as the user scrolls
-  final List<String> jobNotifications = [];
-  final List<String> jobLinks = [];
+  late AnimationController _controller;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: '');
+    _scrollController = ScrollController();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 10), // Adjust speed of scrolling
+    )..addListener(() {
+        if (_scrollController.hasClients) {
+          double maxExtent = _scrollController.position.maxScrollExtent;
+          double currentOffset = _scrollController.offset;
+          double newOffset = currentOffset + 1; // Adjust scrolling speed
+          if (newOffset >= maxExtent) {
+            _scrollController.jumpTo(0); // Loop back to start
+          } else {
+            _scrollController.jumpTo(newOffset);
+          }
+        }
+      });
 
-    // Initialise scroll controller
-    _notificationController = ScrollController()
-      ..addListener(_scrollListener);
-
-    // Load first page of data
-    jobNotifications.addAll(_initialNotifications);
-    jobLinks.addAll(_initialLinks);
+    _controller.repeat(); // Continuous scrolling
   }
 
   @override
   void dispose() {
-    nameController.dispose();
-    _notificationController
-      ..removeListener(_scrollListener)
-      ..dispose();
+    _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
+  // ---------- Scroll / Infinite loading ----------
+  // Static list of job notifications
+  // final List<String> jobNotifications = [
+  //   '* New opening for Software Engineer at TCS, apply by Oct 20, 2025',
+  //   '* Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
+  //   '* Bank PO vacancies announced, check eligibility now',
+  //   '* Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
+  //   '* Self-Employment Loan Scheme launched, apply today',
+  // ];
+  // final List<String> links = [
+  //   'https://www.tcs.com/careers',
+  //   'https://www.tcs.com/careers/teacher',
+  //   'https://www.tcs.com/careers/bank-po',
+  //   'https://www.tcs.com/careers/skill-development-program',
+  //   'https://www.tcs.com/careers/self-employment-loan-scheme',
+  // ];
+  final List<String> links = ['https://www.google.com']; // Single valid URL
+final List<String> jobNotifications = ['* Test1 notification'];
 
-  // ---------- Infinite scroll logic ----------
-  void _scrollListener() {
-    if (_notificationController.offset >=
-            _notificationController.position.maxScrollExtent - 200 &&
-        !_notificationController.position.outOfRange &&
-        !_isLoadingMore) {
-      _loadMore();
-    }
+  // Widget buildJobNotifications() {
+  //   return Container(
+  //     height: 200,
+  //     margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+  //     padding: const EdgeInsets.all(15),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(10.0),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.3),
+  //           spreadRadius: 2,
+  //           blurRadius: 5,
+  //           offset: const Offset(0, 3),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Marquee(
+  //       text: jobNotifications.join('\n\n'),
+  //       style: const TextStyle(
+  //         color: Colors.blueAccent,
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //       scrollAxis: Axis.vertical,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       blankSpace: 20.0,
+  //       velocity: 20.0,
+  //       pauseAfterRound: const Duration(seconds: 2),
+  //       startPadding: 10.0,
+  //       accelerationDuration: const Duration(seconds: 1),
+  //       accelerationCurve: Curves.linear,
+  //       decelerationDuration: const Duration(milliseconds: 500),
+  //       decelerationCurve: Curves.easeOut,
+  //     ),
+  //   );
+  // }
+ 
+  Widget buildJobNotifications() {
+    return Builder(
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: jobNotifications.length * 100,
+            itemBuilder: (context, index) {
+              final notificationIndex = index % jobNotifications.length;
+              return GestureDetector(
+                onTap: () async {
+                  if (notificationIndex >= links.length) {
+                    print('Error: notificationIndex $notificationIndex exceeds links length ${links.length}');
+                    return;
+                  }
+                  final url = Uri.parse(links[notificationIndex]);
+                  print('Tapped notification #$notificationIndex: ${jobNotifications[notificationIndex]} -> $url');
+                  try {
+                    print('Checking if URL can be launched: $url');
+                    if (await canLaunchUrl(url)) {
+                      print('Launching URL: $url');
+                      await launchUrl(url, mode: LaunchMode.platformDefault);
+                    } else {
+                      print('Cannot launch URL: $url');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Cannot launch ${links[notificationIndex]}')),
+                      );
+                    }
+                  } catch (e) {
+                    print('Error launching URL $url: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error launching URL: $e')),
+                    );
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    jobNotifications[notificationIndex],
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
-
-  Future<void> _loadMore() async {
-    if (_isLoadingMore) return;
-    setState(() => _isLoadingMore = true);
-
-    // Simulate network delay – replace with real API call
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {
-      // Append another “page” (duplicate for demo)
-      jobNotifications.addAll(_initialNotifications);
-      jobLinks.addAll(_initialLinks);
-      _isLoadingMore = false;
-    });
-  }
-
-  // ---------- URL launcher ----------
-  Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  // ---------- UI helpers ----------
-  void displayDrawer(BuildContext context) =>
-      Scaffold.of(context).openDrawer();
 
   void displayEndDrawer(BuildContext context) =>
       Scaffold.of(context).openEndDrawer();
@@ -127,58 +200,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildJobNotifications() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListView.builder(
-        controller: _notificationController,
-        physics: const ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: jobNotifications.length + (_isLoadingMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == jobNotifications.length) {
-            // Loading indicator at the end
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
 
-          final String text = jobNotifications[index];
-          final String link = jobLinks[index];
-
-          return GestureDetector(
-            onTap: () => _launchUrl(link),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.blue,
-                  fontSize: 14,
-                  decoration: TextDecoration.underline,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   // ---------- Grid button ----------
   Widget gridButton({
@@ -321,9 +343,11 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset('assets/images/logo4.png', height: 80),
-                    const Spacer(),
+                    Image.asset('assets/images/logo4.png', height: 100),
+                    // const Spacer(),
+                    SizedBox(height: 20),
                     Column(
+
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
