@@ -55,53 +55,57 @@ class ProfileDrawer extends ConsumerWidget {
   final UserModel? user = ref.watch(userProvider.state).state;
     // final isGuest = !user.isAuthenticated;
   List<String> emailList = ['praneshpal009@gmail.com','sowrajit2000@gmail.com','sowrajit0610@gmail.com','sowrajit.business@gmail.com', 'priyacsenita@gmail.com', 'debbarmakhalen175@gmail.com', 'employment.gov.tr@gmail.com', 'sowrajit1998@gmail.com'];
-
+print("user $user");
       // If user is null, you might want to show a different UI or perform some other action
   if (user == null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    logOut(ref, context); // Auto-call
+  });
+  return Center(child: Text('Logging out...')); // Or loading
     // Handle the case where user is null
     // For example, return a different widget or show a login prompt
-    return GestureDetector(
-      onTap: (() => logOut(ref, context)),
-      child: Center(
-                child: Container(
-                  height: 50,
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    // color: currentTheme.canvasColor,
-                    color: Color.fromARGB(255, 253, 253, 253),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     offset: const Offset(5, 10),
-                    //     blurRadius: 15,
-                    //     color: currentTheme.backgroundColor,
-                    //   )
-                    // ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Align children to the top
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.info_outline,
-                          color: Color.fromRGBO(232, 26, 26, 1)),
-                          // Spacer(),
-                      Expanded(
-                        // Wrap the Text widget with Expanded
-                        child: Text(
-                          "Your session is over, click to login again.",
-                          style: TextStyle(color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
+    // return GestureDetector(
+    //   onTap: (() => logOut(ref, context)),
+    //   child: Center(
+    //             child: Container(
+    //               height: 50,
+    //               margin: const EdgeInsets.symmetric(horizontal: 15),
+    //               padding: const EdgeInsets.all(15),
+    //               decoration: BoxDecoration(
+    //                 borderRadius: BorderRadius.circular(20),
+    //                 // color: currentTheme.canvasColor,
+    //                 color: Color.fromARGB(255, 253, 253, 253),
+    //                 // boxShadow: [
+    //                 //   BoxShadow(
+    //                 //     offset: const Offset(5, 10),
+    //                 //     blurRadius: 15,
+    //                 //     color: currentTheme.backgroundColor,
+    //                 //   )
+    //                 // ],
+    //               ),
+    //               child: Row(
+    //                 crossAxisAlignment:
+    //                     CrossAxisAlignment.center, // Align children to the top
+    //                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Icon(Icons.info_outline,
+    //                       color: Color.fromRGBO(232, 26, 26, 1)),
+    //                       // Spacer(),
+    //                   Expanded(
+    //                     // Wrap the Text widget with Expanded
+    //                     child: Text(
+    //                       "Your session is over, click to login again.",
+    //                       style: TextStyle(color: Colors.black),
+    //                       overflow: TextOverflow.ellipsis,
+    //                       maxLines: 4,
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           )
       
-      );
+    //   );
   }
   print('which user:' + user.toString());
 

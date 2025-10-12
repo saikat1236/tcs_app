@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 import '../repository/auth_repository.dart';
 
@@ -50,7 +52,25 @@ class AuthController extends StateNotifier<bool> {
   }
 
   Stream<User?> get authStateChange => _authRepository.authStateChange;
-
+Future<void> restoreSession(BuildContext context) async {
+  try {
+    final googleUser = await GoogleSignIn().signInSilently();
+    if (googleUser != null) {
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
+      // Update userProvider as in signInWithGoogle
+      final userData = await _authRepository.getUserData(userCred.user!.uid).first;
+      _ref.read(userProvider.notifier).state = userData;
+    }
+  } catch (e) {
+    debugPrint('Silent re-auth failed: $e');
+    // Optionally logout or show login
+  }
+}
   Future<void> signInWithGoogle(BuildContext context, UserCredential userCred) async {
     state = true;
     try {
@@ -112,16 +132,22 @@ class AuthController extends StateNotifier<bool> {
     return _authRepository.getUserData(uid);
   }
 
+  // Future<void> logout() async {
+  //   state = true;
+  //   try {
+  //     await _authRepository.logOut();
+  //     _ref.read(userProvider.notifier).state = null;
+  //     debugPrint("User logged out");
+  //   } catch (e) {
+  //     debugPrint("Logout error: $e");
+  //   } finally {
+  //     state = false;
+  //   }
+  // }
   Future<void> logout() async {
-    state = true;
-    try {
-      await _authRepository.logOut();
-      _ref.read(userProvider.notifier).state = null;
-      debugPrint("User logged out");
-    } catch (e) {
-      debugPrint("Logout error: $e");
-    } finally {
-      state = false;
-    }
-  }
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setBool('showHome', false);
+  await _authRepository.logOut(); // Calls AuthService.signOut()
+  _ref.read(userProvider.notifier).state = null;
+}
 }
