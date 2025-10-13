@@ -6,12 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 import '../repository/auth_repository.dart';
 
+final sharedPreferencesProvider = Provider<SharedPreferences>( (ref) => throw UnimplementedError());
+
 final userProvider = StateProvider<UserModel?>((ref) => null);
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
     authRepository: ref.watch(authRepositoryProvider),
     ref: ref,
+    sharedPreferences: ref.watch(sharedPreferencesProvider),
   ),
 );
 
@@ -27,10 +30,16 @@ final getUserDataProvider = StreamProvider.family<UserModel?, String>((ref, uid)
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
   final Ref _ref;
+  final SharedPreferences _sharedPreferences;
 
-  AuthController({required AuthRepository authRepository, required Ref ref})
+  AuthController({
+    required AuthRepository authRepository,
+    required Ref ref,
+    required SharedPreferences sharedPreferences,
+  })
       : _authRepository = authRepository,
         _ref = ref,
+        _sharedPreferences = sharedPreferences,
         super(false) {
     // Listen to auth state changes to update userProvider
     _ref.listen(authStateChangeProvider, (previous, next) {
@@ -52,25 +61,45 @@ class AuthController extends StateNotifier<bool> {
   }
 
   Stream<User?> get authStateChange => _authRepository.authStateChange;
-Future<void> restoreSession(BuildContext context) async {
-  try {
-    final googleUser = await GoogleSignIn().signInSilently();
-    if (googleUser != null) {
-      final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
-      // Update userProvider as in signInWithGoogle
-      final userData = await _authRepository.getUserData(userCred.user!.uid).first;
-      _ref.read(userProvider.notifier).state = userData;
+  Future<void> restoreSession(BuildContext context) async {
+    try {
+      final showHome = _sharedPreferences.getBool('showHome') ?? false;
+      if (showHome) {
+        User? firebaseUser = FirebaseAuth.instance.currentUser; // Check Firebase's current user first
+
+        if (firebaseUser == null) { // If no Firebase user, try Google silent sign-in
+          final googleUser = await GoogleSignIn().signInSilently();
+          if (googleUser != null) {
+            final googleAuth = await googleUser.authentication;
+            final credential = GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            );
+            final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
+            firebaseUser = userCred.user; // Update firebaseUser
+          } else {
+            debugPrint("No Google user found for silent re-auth.");
+          }
+        }
+
+        if (firebaseUser != null) {
+          final userData = await _authRepository.getUserData(firebaseUser.uid).first;
+          _ref.read(userProvider.notifier).state = userData;
+          debugPrint("Session restored for user: ${userData.email}");
+        } else {
+          debugPrint("No user found to restore session.");
+          // We don't set showHome to false here, as authStateChangeProvider will handle it.
+        }
+      } else {
+        debugPrint("showHome is false, not attempting session restore.");
+      }
+    } catch (e) {
+      debugPrint('Silent re-auth failed: $e');
+      // We don't set showHome to false here, as authStateChangeProvider will handle it.
+      // Optionally logout or show login
     }
-  } catch (e) {
-    debugPrint('Silent re-auth failed: $e');
-    // Optionally logout or show login
   }
-}
+
   Future<void> signInWithGoogle(BuildContext context, UserCredential userCred) async {
     state = true;
     try {
@@ -101,6 +130,7 @@ Future<void> restoreSession(BuildContext context) async {
           skills: [],
         );
         _ref.read(userProvider.notifier).state = userModel;
+        await _sharedPreferences.setBool('showHome', true);
         debugPrint("Google Sign-In user model set: $userModel");
       } else {
         debugPrint("Google Sign-In returned null user");
@@ -132,22 +162,10 @@ Future<void> restoreSession(BuildContext context) async {
     return _authRepository.getUserData(uid);
   }
 
-  // Future<void> logout() async {
-  //   state = true;
-  //   try {
-  //     await _authRepository.logOut();
-  //     _ref.read(userProvider.notifier).state = null;
-  //     debugPrint("User logged out");
-  //   } catch (e) {
-  //     debugPrint("Logout error: $e");
-  //   } finally {
-  //     state = false;
-  //   }
-  // }
   Future<void> logout() async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setBool('showHome', false);
-  await _authRepository.logOut(); // Calls AuthService.signOut()
-  _ref.read(userProvider.notifier).state = null;
-}
+    await _sharedPreferences.setBool('showHome', false);
+    await _authRepository.logOut(); // Calls AuthService.signOut()
+    _ref.read(userProvider.notifier).state = null;
+    debugPrint("User logged out and showHome set to false");
+  }
 }

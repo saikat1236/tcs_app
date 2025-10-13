@@ -24,6 +24,9 @@ void main() async {
       await SharedPreferences.getInstance();
   runApp(
     ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+      ],
       child: MyApp(sharedPreferences: sharedPreferences),
     ),
   );
@@ -44,11 +47,19 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MainAppState extends ConsumerState<MyApp> {
   DateTime? lastBackPressTime;
+  bool _isLoading = true; // Add a loading state
 
   @override
   void initState() {
     super.initState();
-    // secureScreen();
+    _restoreSession();
+  }
+
+  void _restoreSession() async {
+    await ref.read(authControllerProvider.notifier).restoreSession(context);
+    setState(() {
+      _isLoading = false; // Set loading to false after session restoration attempt
+    });
   }
 
   // Future<void> secureScreen() async {
@@ -60,7 +71,7 @@ class _MainAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final showHome = widget.sharedPreferences.getBool('showHome') ?? false;
+    // final showHome = widget.sharedPreferences.getBool('showHome') ?? false; // This line is no longer needed here
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -89,34 +100,41 @@ class _MainAppState extends ConsumerState<MyApp> {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
+        // Define other properties of the dark theme here
       ),
       themeMode: ThemeMode
           .light, // Can be ThemeMode.light or ThemeMode.dark to override the system setting
 
       onGenerateRoute: generateRoute,
-      home: PopScope(
-        canPop: true,
-        onPopInvoked: (bool didPop) {
-          final now = DateTime.now();
-          if (lastBackPressTime == null ||
-              now.difference(lastBackPressTime!) > Duration(seconds: 2)) {
-            lastBackPressTime = now;
-            ScaffoldMessenger.of(context)
-              ..removeCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text('Press back again to exit'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-          } else {
-            SystemNavigator
-                .pop(); // Directly exit the app if pressed again within 2 seconds
-          }
-          // No need to return anything as onPopInvoked expects a void return
-        },
-        child: showHome ? const HomePage() : const LoginPage(),
-      ),
+      home: _isLoading
+          ? const Loader() // Show loader while session is being restored
+          : PopScope(
+              canPop: true,
+              onPopInvoked: (bool didPop) {
+                final now = DateTime.now();
+                if (lastBackPressTime == null ||
+                    now.difference(lastBackPressTime!) > Duration(seconds: 2)) {
+                  lastBackPressTime = now;
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text('Press back again to exit'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                } else {
+                  SystemNavigator
+                      .pop(); // Directly exit the app if pressed again within 2 seconds
+                }
+                // No need to return anything as onPopInvoked expects a void return
+              },
+              child: ref.watch(authStateChangeProvider).when(
+                    data: (user) => user != null ? const MainHome() : const LoginPage(),
+                    error: (error, _) => ErrorText(error: error.toString()),
+                    loading: () => const Loader(),
+                  ),
+            ),
     );
   }
 }

@@ -23,16 +23,16 @@ class ProfileDrawer extends ConsumerWidget {
       // Navigator.of(context).popUntil(ModalRoute.withName('/'));
       // Navigator.of(context).pushNamedAndRemoveUntil(
       // OnBoarding.routeName, ModalRoute.withName('/'));
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setBool('showHome', false);
-        // prefs.setBool('shoeLang', true);
-      } finally {
+      // try {
+      //   final prefs = await SharedPreferences.getInstance();
+      //   prefs.setBool('showHome', false);
+      //   // prefs.setBool('shoeLang', true);
+      // } finally {
         Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) {
                     return const LoginPage();
                   }));
-      }
+      // }
     }
   }
 
@@ -58,10 +58,10 @@ class ProfileDrawer extends ConsumerWidget {
 print("user $user");
       // If user is null, you might want to show a different UI or perform some other action
   if (user == null) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    logOut(ref, context); // Auto-call
-  });
-  return Center(child: Text('Logging out...')); // Or loading
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    // logOut(ref, context); // Auto-call
+  // });
+  return Center(child: Text('Loading user data...')); // Or loading
     // Handle the case where user is null
     // For example, return a different widget or show a login prompt
     // return GestureDetector(
@@ -288,8 +288,8 @@ print("user $user");
                   leading: Icon(Icons.logout_rounded, color: Colors.red),
                   onTap: () async {
                 try {
-                  final prefs = await SharedPreferences.getInstance();
-                  prefs.setBool('showHome', false);
+                  // final prefs = await SharedPreferences.getInstance();
+                  // prefs.setBool('showHome', false);
                   // prefs.setBool('shoeLang', true);
                   // AuthService().signOut();
                         ref.read(authControllerProvider.notifier).logout();

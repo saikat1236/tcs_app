@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tcs_app_fixed/auth/controlller/auth_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import '../../main.dart';
@@ -587,8 +588,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   .read(authControllerProvider.notifier)
                   .signUpWithGoogle(context, widget.userCredential, userData);
 
-              final prefs = await SharedPreferences.getInstance();
-              prefs.setBool('showHome', true);
+              // final prefs = await SharedPreferences.getInstance();
+              // prefs.setBool('showHome', true);
 
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => const HomePage()));
