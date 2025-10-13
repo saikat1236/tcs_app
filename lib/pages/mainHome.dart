@@ -52,22 +52,22 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
   }
   // ---------- Scroll / Infinite loading ----------
   // Static list of job notifications
-  // final List<String> jobNotifications = [
-  //   '* New opening for Software Engineer at TCS, apply by Oct 20, 2025',
-  //   '* Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
-  //   '* Bank PO vacancies announced, check eligibility now',
-  //   '* Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
-  //   '* Self-Employment Loan Scheme launched, apply today',
-  // ];
-  // final List<String> links = [
-  //   'https://www.tcs.com/careers',
-  //   'https://www.tcs.com/careers/teacher',
-  //   'https://www.tcs.com/careers/bank-po',
-  //   'https://www.tcs.com/careers/skill-development-program',
-  //   'https://www.tcs.com/careers/self-employment-loan-scheme',
-  // ];
-  final List<String> links = ['https://www.google.com']; // Single valid URL
-final List<String> jobNotifications = ['* Test1 notification'];
+  final List<String> jobNotifications = [
+    '* New opening for Software Engineer at TCS, apply by Oct 20, 2025',
+    '* Government of Tripura hiring 50 teachers, deadline Nov 1, 2025',
+    '* Bank PO vacancies announced, check eligibility now',
+    '* Skill Development Program for ITI graduates, enroll by Oct 15, 2025',
+    '* Self-Employment Loan Scheme launched, apply today',
+  ];
+  final List<String> links = [
+    'https://www.tcs.com/careers',
+    'https://www.tcs.com/careers/teacher',
+    'https://www.tcs.com/careers/bank-po',
+    'https://www.tcs.com/careers/skill-development-program',
+    'https://www.tcs.com/careers/self-employment-loan-scheme',
+  ];
+//   final List<String> links = ['https://www.google.com']; // Single valid URL
+// final List<String> jobNotifications = ['* Test1 notification'];
 
   // Widget buildJobNotifications() {
   //   return Container(
