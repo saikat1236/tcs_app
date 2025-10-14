@@ -107,12 +107,44 @@ class _SearchPageState extends ConsumerState<SearchFeed> {
             );
           },
           error: (error, stackTrace) {
-            return SizedBox(
-              height: 300,
-              child: ErrorText(
-                error: error.toString(),
-              ),
-            );
+                         return Center(
+                child: Container(
+                  height: 100,
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    // color: currentTheme.canvasColor,
+                    color: Color.fromARGB(236, 253, 253, 253),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     offset: const Offset(5, 10),
+                    //     blurRadius: 15,
+                    //     color: currentTheme.backgroundColor,
+                    //   )
+                    // ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Align children to the top
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.info_outline,
+                          color: Color.fromRGBO(232, 26, 26, 1)),
+                          // Spacer(),
+                      Expanded(
+                        // Wrap the Text widget with Expanded
+                        child: Text(
+                          "Sorry, no posts available right now in the category you're looking for. Please check again later.",
+                          style: TextStyle(color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
           },
           loading: () => const Loader(),
         );

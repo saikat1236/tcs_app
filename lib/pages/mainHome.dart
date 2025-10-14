@@ -328,94 +328,12 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
         children: [
           const SizedBox(height: 20),
 
-          // Welcome card
-          Container(
-            height: 300,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Card(
-              clipBehavior: Clip.hardEdge,
-              elevation: 0,
-              child: Container(
-                color: Colors.blue.shade100,
-                width: double.maxFinite,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/images/logo4.png', height: 100),
-                    // const Spacer(),
-                    SizedBox(height: 20),
-                    Column(
+        
 
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Welcome to',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 24,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          'Tripura Career Services',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Text(
-                          'Directorate of Employment',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          'Services & Manpower Planning',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-            ),
-          ),
 
-          // Latest Job News button
-          InkWell(
-            onTap: () => Get.to(() =>  JobNewsImageList()),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.purple.shade800,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-              width: double.maxFinite,
-              padding: const EdgeInsets.all(16),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Latest Job News',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ),
 
           // Job notifications (infinite scroll)
-          buildJobNotifications(),
+          // buildJobNotifications(),
 
           // Grid of action buttons
           Container(
@@ -488,7 +406,30 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
               ],
             ),
           ),
-
+                    // Latest Job News button
+          InkWell(
+            onTap: () => Get.to(() =>  JobNewsImageList()),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.purple.shade800,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+              width: double.maxFinite,
+              padding: const EdgeInsets.all(16),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Latest Job News',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 16),
+          buildJobNotifications(),
           const SizedBox(height: 64),
         ],
       ),

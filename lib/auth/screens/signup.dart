@@ -135,7 +135,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     'West Bengal'
   ];
   var trainingItems = ['ITI', "PSU", 'PMKVY', 'DDUGKY', 'Others'];
-  var employmentStatusItem = ['employed', 'unemployment'];
+  var employmentStatusItem = ['Unemployed', 'Self-Employed','Employed','Ex-Serviceman'];
 
   @override
   void initState() {

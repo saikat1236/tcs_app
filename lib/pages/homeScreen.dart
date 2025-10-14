@@ -196,7 +196,8 @@ class _MainHomeScreenState extends State<MainHomeScreen>
               ),
             ];
           },
-          body: FeedScreen()),
+          body: FeedScreen()
+          ),
     );
   }
 

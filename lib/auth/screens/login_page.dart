@@ -26,27 +26,99 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       extendBody: true,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/logo.png", width: 120),
+              Container(
+                height: 110,
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Card(
+                  clipBehavior: Clip.hardEdge,
+                  elevation: 0,
+                  child: Container(
+                    color: Colors.white,
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'assets/images/logo4.png',
+                                height: 60,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Directorate of Employment",
+                                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                                  ),
+                                  Text("Services & Manpower Planning",
+                                                 style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        // const Spacer(),
+   
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Text(
+                              'Welcome to',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 24,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            Text(
+                              'Tripura Career Services',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                              ),
+                            ),
+                           
+                  
+                            
+                          ],
+                        ),
+              Image.asset("assets/images/logo.png", width: 200),
               Text(
-                "Tripura Career Services",
+                "A Hub of Career Information",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade800,
-                  fontSize: 20,
+                  color: Colors.red.shade900,
+                  fontSize: 16,
                 ),
               ),
               const SizedBox(height: 24.0),
-              Text(
-                'Login',
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+
+              // Text(
+              //   'Login',
+              //   style: TextStyle(
+              //     fontSize: 25.0,
+              //     fontWeight: FontWeight.w700,
+              //   ),
+              // ),
               const Spacer(), // Replaces fixed height
               Container(
                 height: 60,
@@ -62,10 +134,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   onPressed: () async {
                     setState(() => isLoading = true);
                     try {
-                      final userCred = await AuthService().signInWithGoogle(context, ref);
+                      final userCred = await AuthService().signInWithGoogle(
+                        context,
+                        ref,
+                      );
                       if (userCred != null) {
                         print('Google sign-in successful, redirecting...');
-                        await ref.read(authControllerProvider.notifier).signInWithGoogle(context, userCred);
+                        await ref
+                            .read(authControllerProvider.notifier)
+                            .signInWithGoogle(context, userCred);
                         // final prefs = await SharedPreferences.getInstance();
                         // prefs.setBool('showHome', true);
                       }
@@ -78,7 +155,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       if (mounted) setState(() => isLoading = false);
                     }
                   },
-                  icon: Image.asset('assets/images/google.png', width: 30, height: 20),
+                  icon: Image.asset(
+                    'assets/images/google.png',
+                    width: 30,
+                    height: 20,
+                  ),
                   label: isLoading
                       ? CircularProgressIndicator(color: Colors.blue)
                       : Text(

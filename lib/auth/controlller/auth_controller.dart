@@ -101,6 +101,7 @@ class AuthController extends StateNotifier<bool> {
   }
 
   Future<void> signInWithGoogle(BuildContext context, UserCredential userCred) async {
+    print("inside auth controller signInWithGoogle");
     state = true;
     try {
       final user = userCred.user;
@@ -145,6 +146,7 @@ class AuthController extends StateNotifier<bool> {
   }
 
   Future<void> signUpWithGoogle(BuildContext context, UserCredential userCredential, UserModel userData) async {
+    print("inside auth controller signUpWithGoogle");
     state = true;
     try {
       await _authRepository.createUserData(userCredential.user!.uid, userData);
