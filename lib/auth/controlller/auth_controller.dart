@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tcs_app_fixed/auth/screens/login_page.dart';
 import '../../models/user_model.dart';
 import '../repository/auth_repository.dart';
 
@@ -164,10 +165,24 @@ class AuthController extends StateNotifier<bool> {
     return _authRepository.getUserData(uid);
   }
 
-  Future<void> logout() async {
+Future<void> logout(BuildContext context) async {
+  try {
+    // Clear SharedPreferences
     await _sharedPreferences.setBool('showHome', false);
-    await _authRepository.logOut(); // Calls AuthService.signOut()
+    // Sign out from Firebase and Google
+    await _authRepository.logOut();
+    // Clear userProvider
     _ref.read(userProvider.notifier).state = null;
-    debugPrint("User logged out and showHome set to false");
+    // Navigate to LoginPage
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false, // Remove all previous routes
+    );
+  } catch (e) {
+    debugPrint("Logout error: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Logout error: $e")),
+    );
   }
+}
 }

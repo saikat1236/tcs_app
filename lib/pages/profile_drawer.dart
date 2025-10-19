@@ -13,31 +13,9 @@ import 'add_job_post.dart';
 class ProfileDrawer extends ConsumerWidget {
   const ProfileDrawer({super.key});
 
-  void logOut(WidgetRef ref, BuildContext context) async {
-    try {
-      ref.read(authControllerProvider.notifier).logout();
-    } finally {
-      // ref.read(userProvider.notifier).update((state) => null);
-      // ref.read(userProvider.notifier).();
-      // Navigator.popUntil(context, (route) => )
-      // Navigator.of(context).popUntil(ModalRoute.withName('/'));
-      // Navigator.of(context).pushNamedAndRemoveUntil(
-      // OnBoarding.routeName, ModalRoute.withName('/'));
-      // try {
-      //   final prefs = await SharedPreferences.getInstance();
-      //   prefs.setBool('showHome', false);
-      //   // prefs.setBool('shoeLang', true);
-      // } finally {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
-      // }
-    }
-  }
+  void logOut(WidgetRef ref, BuildContext context) {
+  ref.read(authControllerProvider.notifier).logout(context);
+}
 
   String? encodeQueryParameters(Map<String, String> params) {
     return params.entries
@@ -185,7 +163,7 @@ class ProfileDrawer extends ConsumerWidget {
                           child: Text(
                             user.email,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 10,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
@@ -315,29 +293,13 @@ class ProfileDrawer extends ConsumerWidget {
                 },
               ),
               ListTile(
-                title: const Text(
-                  'Log Out',
-                  style: TextStyle(color: Colors.black),
-                ),
-                leading: Icon(Icons.logout_rounded, color: Colors.red),
-                onTap: () async {
-                  try {
-                    // final prefs = await SharedPreferences.getInstance();
-                    // prefs.setBool('showHome', false);
-                    // prefs.setBool('shoeLang', true);
-                    // AuthService().signOut();
-                    ref.read(authControllerProvider.notifier).logout();
-                  } finally {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const LoginPage();
-                        },
-                      ),
-                    );
-                  }
-                },
-              ),
+  title: const Text(
+    'Log Out',
+    style: TextStyle(color: Colors.black),
+  ),
+  leading: Icon(Icons.logout_rounded, color: Colors.red),
+  onTap: () => logOut(ref, context),
+),
               emailList.contains(user.email)
                   ? ListTile(
                       title: Text(
